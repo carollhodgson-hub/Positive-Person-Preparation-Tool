@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dreamy Wellness Preparation Tool</title>
+  <style>
+    :root{
+      --bg1:#11172f;
+      --bg2:#1c2247;
+      --bg3:#2a3063;
+      --moon:#f7f3d6;
+      --star:#ffffff;
+      --card:rgba(255,255,255,0.12);
+      --card-strong:rgba(255,255,255,0.18);
+      --text:#f4f6ff;
+      --muted:#d7dcf8;
+      --accent:#bba7ff;
+      --accent2:#8faeff;
+      --mint:#9ee3cb;
+      --pink:#ffd6ee;
+      --gold:#ffe7a8;
+      --border:rgba(255,255,255,0.18);
+      --shadow:0 18px 50px rgba(0,0,0,0.28);
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 70% 18%, rgba(247,243,214,0.16), transparent 9%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg3));
+      overflow-x:hidden;
+      padding:18px;
+      position:relative;
+    }
+
+    .sky{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+
+    .moon{
+      position:absolute;
+      top:58px;
+      right:80px;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, #fffdf3, var(--moon));
+      box-shadow:0 0 30px rgba(247,243,214,0.45), 0 0 80px rgba(247,243,214,0.18);
+      opacity:0.95;
+    }
+
+    .star{
+      position:absolute;
+      width:3px;
+      height:3px;
+      background:var(--star);
+      border-radius:50%;
+      opacity:0.85;
+      animation:twinkle 4s infinite ease-in-out;
+    }
+
+    .cloud{
+      position:absolute;
+      background:rgba(255,255,255,0.08);
+      border-radius:999px;
+      filter:blur(2px);
+      animation:drift linear infinite;
+    }
+
+    .cloud::before,
+    .cloud::after{
+      content:"";
+      position:absolute;
+      background:rgba(255,255,255,0.08);
+      border-radius:50%;
+    }
+
+    .cloud1{
+      width:180px;height:50px;top:140px;left:-220px;animation-duration:52s;
+    }
+    .cloud1::before{width:70px;height:70px;left:24px;top:-26px;}
+    .cloud1::after{width:90px;height:90px;right:26px;top:-38px;}
+
+    .cloud2{
+      width:220px;height:60px;top:240px;left:-260px;animation-duration:68s;opacity:0.7;
+    }
+    .cloud2::before{width:90px;height:90px;left:38px;top:-32px;}
+    .cloud2::after{width:110px;height:110px;right:28px;top:-46px;}
+
+    .cloud3{
+      width:160px;height:46px;top:340px;left:-200px;animation-duration:60s;opacity:0.65;
+    }
+    .cloud3::before{width:64px;height:64px;left:18px;top:-22px;}
+    .cloud3::after{width:84px;height:84px;right:16px;top:-34px;}
+
+    .wrap{
+      max-width:1180px;
+      margin:0 auto;
+      position:relative;
+      z-index:1;
+    }
+
+    .main{
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(18px);
+      border:1px solid var(--border);
+      border-radius:var(--radius-xl);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .hero{
+      padding:34px 24px 24px;
+      text-align:center;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero h1{
+      margin:0 0 10px;
+      font-size:clamp(2rem, 4vw, 3rem);
+      line-height:1.1;
+      letter-spacing:0.02em;
+    }
+
+    .subtitle{
+      max-width:820px;
+      margin:0 auto;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:1rem;
+    }
+
+    .top-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top:18px;
+    }
+
+    .pill{
+      background:rgba(255,255,255,0.14);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px 14px;
+      font-weight:700;
+      font-size:0.93rem;
+      color:#f5f7ff;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:20px;
+      padding:20px;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:22px;
+      box-shadow:0 10px 28px rgba(0,0,0,0.12);
+    }
+
+    .full{grid-column:1 / -1;}
+
+    .tag{
+      display:inline-block;
+      margin-bottom:12px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:0.8rem;
+      font-weight:800;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      color:#fff;
+    }
+
+    .tag.quote{background:rgba(187,167,255,0.3);}
+    .tag.task{background:rgba(158,227,203,0.28);}
+    .tag.coping{background:rgba(255,231,168,0.28);}
+    .tag.aff{background:rgba(255,214,238,0.28);}
+    .tag.breathe{background:rgba(143,174,255,0.28);}
+    .tag.mood{background:rgba(255,255,255,0.18);}
+    .tag.gratitude{background:rgba(158,227,203,0.24);}
+    .tag.kindness{background:rgba(255,214,238,0.24);}
+    .tag.journal{background:rgba(187,167,255,0.24);}
+
+    h2{
+      margin:0 0 10px;
+      font-size:1.15rem;
+      color:#ffffff;
+    }
+
+    .big-text{
+      font-size:1.15rem;
+      line-height:1.8;
+      color:#f8f9ff;
+      margin:8px 0 12px;
+    }
+
+    .small-note{
+      color:var(--muted);
+      font-size:0.94rem;
+      line-height:1.6;
+    }
+
+    .button-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      font-size:0.96rem;
+      font-weight:800;
+      cursor:pointer;
+      transition:transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 24px rgba(0,0,0,0.18);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff;
+    }
+
+    .btn-mint{
+      background:linear-gradient(135deg, #9ee3cb, #bff2df);
+      color:#18382e;
+    }
+
+    .btn-soft{
+      background:rgba(255,255,255,0.14);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.16);
+    }
+
+    .btn-pink{
+      background:linear-gradient(135deg, #ffd6ee, #ffe8f5);
+      color:#7d3d63;
+    }
+
+    .output-box{
+      margin-top:14px;
+      padding:15px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.08);
+      border:1px dashed rgba(255,255,255,0.22);
+      min-height:60px;
+      line-height:1.7;
+      color:#f8f9ff;
+    }
+
+    .status-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      margin-top:16px;
+    }
+
+    .status-pill{
+      padding:9px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.1);
+      border:1px solid var(--border);
+      font-weight:700;
+      color:#fff;
+    }
+
+    .status-pill.done{
+      background:rgba(158,227,203,0.24);
+      color:#effff8;
+    }
+
+    .affirmation-card,
+    .gratitude-card,
+    .kindness-card{
+      margin-top:12px;
+      border-radius:20px;
+      padding:22px;
+      min-height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .affirmation-card{
+      background:linear-gradient(135deg, rgba(255,214,238,0.18), rgba(187,167,255,0.14));
+    }
+
+    .gratitude-card{
+      background:linear-gradient(135deg, rgba(158,227,203,0.16), rgba(255,231,168,0.12));
+    }
+
+    .kindness-card{
+      background:linear-gradient(135deg, rgba(143,174,255,0.14), rgba(255,214,238,0.12));
+    }
+
+    .card-text{
+      font-size:1.12rem;
+      line-height:1.75;
+      font-weight:700;
+      max-width:720px;
+    }
+
+    .breathing-wrap{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding-top:8px;
+    }
+
+    .breathing-circle{
+      width:170px;
+      height:170px;
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.38), rgba(143,174,255,0.24), rgba(187,167,255,0.18));
+      box-shadow:0 0 25px rgba(187,167,255,0.18), inset 0 0 25px rgba(255,255,255,0.08);
+      animation:breathe 8s ease-in-out infinite;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:18px;
+      font-weight:800;
+      line-height:1.5;
+    }
+
+    .breathing-note{
+      color:var(--muted);
+      text-align:center;
+      line-height:1.6;
+      max-width:420px;
+      font-size:0.95rem;
+    }
+
+    .mood-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .mood-btn{
+      background:rgba(255,255,255,0.12);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.16);
+    }
+
+    .mood-message{
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.14);
+      line-height:1.7;
+    }
+
+    textarea{
+      width:100%;
+      min-height:170px;
+      padding:16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      font:inherit;
+      resize:vertical;
+      line-height:1.6;
+      outline:none;
+    }
+
+    textarea::placeholder{
+      color:#d9def9;
+    }
+
+    textarea:focus{
+      border-color:rgba(187,167,255,0.55);
+      box-shadow:0 0 0 4px rgba(187,167,255,0.12);
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .stat{
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.15);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat-num{
+      font-size:1.5rem;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .stat-label{
+      color:var(--muted);
+      font-size:0.93rem;
+      line-height:1.55;
+    }
+
+    .toggle-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      margin-top:14px;
+    }
+
+    .footer{
+      text-align:center;
+      padding:0 22px 26px;
+      color:var(--muted);
+      font-size:0.92rem;
+      line-height:1.6;
+    }
+
+    @keyframes twinkle{
+      0%,100%{opacity:0.3; transform:scale(1);}
+      50%{opacity:1; transform:scale(1.7);}
+    }
+
+    @keyframes drift{
+      from{transform:translateX(0);}
+      to{transform:translateX(calc(100vw + 420px));}
+    }
+
+    @keyframes breathe{
+      0%,100%{transform:scale(0.88);}
+      50%{transform:scale(1.08);}
+    }
+
+    @media (max-width: 940px){
+      .grid{grid-template-columns:1fr;}
+      .stats{grid-template-columns:1fr;}
+      .moon{right:28px; width:92px; height:92px;}
+    }
+
+    @media (max-width: 560px){
+      body{padding:10px;}
+      .hero{padding:26px 14px 20px;}
+      .grid{padding:14px;}
+      .panel{padding:18px;}
+      .button-row button{width:100%;}
+      .breathing-circle{width:145px;height:145px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="moon"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="star" style="top:8%; left:12%; animation-delay:0s;"></div>
+    <div class="star" style="top:12%; left:22%; animation-delay:1s;"></div>
+    <div class="star" style="top:20%; left:38%; animation-delay:2s;"></div>
+    <div class="star" style="top:14%; left:54%; animation-delay:1.5s;"></div>
+    <div class="star" style="top:9%; left:68%; animation-delay:2.8s;"></div>
+    <div class="star" style="top:23%; left:80%; animation-delay:0.6s;"></div>
+    <div class="star" style="top:28%; left:16%; animation-delay:2.2s;"></div>
+    <div class="star" style="top:33%; left:72%; animation-delay:1.3s;"></div>
+    <div class="star" style="top:38%; left:47%; animation-delay:2.4s;"></div>
+    <div class="star" style="top:43%; left:88%; animation-delay:0.9s;"></div>
+    <div class="star" style="top:50%; left:10%; animation-delay:2.7s;"></div>
+    <div class="star" style="top:57%; left:63%; animation-delay:1.8s;"></div>
+  </div>
+
+  <div class="wrap">
+    <main class="main">
+      <section class="hero">
+        <h1>Dreamy Wellness Preparation Tool</h1>
+        <p class="subtitle">
+          A calming daily space for encouragement, reflection, grounding, and gentle action. Your main daily items remain the same throughout the day and refresh automatically tomorrow.
+        </p>
+        <div class="top-row">
+          <div class="pill" id="todayDate"></div>
+          <div class="pill">Saved in this browser on this device</div>
+          <div class="pill" id="soundLabel">Rain sound: Off</div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="tag quote">Daily Positive Quote</div>
+          <h2>Today’s Encouragement</h2>
+          <div class="big-text" id="dailyQuote"></div>
+          <div class="small-note">A thought to return to when the day feels heavy.</div>
+          <div class="button-row">
+            <button class="btn-primary" id="bonusQuoteBtn">Extra Encouragement</button>
+          </div>
+          <div class="output-box" id="bonusQuoteOutput">Click for an extra positive quote.</div>
+        </article>
+
+        <article class="panel">
+          <div class="tag task">Daily Positive Task</div>
+          <h2>Today’s Simple Goal</h2>
+          <div class="big-text" id="dailyTask"></div>
+          <div class="small-note">A realistic action to build a steadier day.</div>
+          <div class="status-row">
+            <div class="status-pill" id="taskStatus">○ Not completed yet</div>
+            <button class="btn-mint" id="completeTaskBtn">Mark Complete</button>
+            <button class="btn-soft" id="resetTaskBtn">Reset</button>
+          </div>
+          <div class="button-row">
+            <button class="btn-primary" id="bonusTaskBtn">Another Positive Task</button>
+          </div>
+          <div class="output-box" id="bonusTaskOutput">Click for an extra simple task.</div>
+        </article>
+
+        <article class="panel">
+          <div class="tag coping">Coping Strategy of the Day</div>
+          <h2>Today’s Calming Strategy</h2>
+          <div class="big-text" id="dailyCoping"></div>
+          <div class="small-note">A simple way to support yourself when stress rises.</div>
+        </article>
+
+        <article class="panel">
+          <div class="tag aff">Affirmation Card</div>
+          <h2>Gentle Affirmation</h2>
+          <div class="affirmation-card">
+            <div class="card-text" id="affirmationText"></div>
+          </div>
+          <div class="button-row">
+            <button class="btn-pink" id="newAffirmationBtn">Draw Another Affirmation</button>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="tag breathe">Breathing Circle</div>
+          <h2>Calm Breathing Space</h2>
+          <div class="breathing-wrap">
+            <div class="breathing-circle">Breathe In<br>Breathe Out</div>
+            <div class="breathing-note">
+              Follow the circle. As it expands, inhale gently. As it softens, exhale slowly.
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="tag mood">Pick Your Mood</div>
+          <h2>How Are You Feeling?</h2>
+          <div class="small-note">Choose what feels closest right now to receive a gentle response.</div>
+          <div class="mood-buttons">
+            <button class="mood-btn" data-mood="anxious">Anxious</button>
+            <button class="mood-btn" data-mood="tired">Tired</button>
+            <button class="mood-btn" data-mood="sad">Sad</button>
+            <button class="mood-btn" data-mood="overwhelmed">Overwhelmed</button>
+            <button class="mood-btn" data-mood="hopeful">Hopeful</button>
+            <button class="mood-btn" data-mood="calm">Calm</button>
+          </div>
+          <div class="mood-message" id="moodMessage">Your mood check-in message will appear here.</div>
+        </article>
+
+        <article class="panel">
+          <div class="tag gratitude">Daily Gratitude Card</div>
+          <h2>Gratitude Prompt</h2>
+          <div class="gratitude-card">
+            <div class="card-text" id="gratitudeText"></div>
+          </div>
+          <div class="button-row">
+            <button class="btn-mint" id="newGratitudeBtn">New Gratitude Prompt</button>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="tag kindness">Send Kindness Outward</div>
+          <h2>Daily Kindness Prompt</h2>
+          <div class="kindness-card">
+            <div class="card-text" id="kindnessText"></div>
+          </div>
+          <div class="button-row">
+            <button class="btn-pink" id="newKindnessBtn">New Kindness Prompt</button>
+          </div>
+        </article>
+
+        <article class="panel full">
+          <div class="tag journal">Reflection Space</div>
+          <h2>Daily Check-In</h2>
+          <textarea id="journalEntry" placeholder="How are you feeling today? What went well? What do you need? What would you like to carry into tomorrow?"></textarea>
+          <div class="button-row">
+            <button class="btn-primary" id="saveJournalBtn">Save Reflection</button>
+            <button class="btn-soft" id="clearJournalBtn">Clear Reflection</button>
+          </div>
+          <div class="small-note" id="journalMessage" style="margin-top:12px;">Your reflection saves only in this browser on this device.</div>
+
+          <div class="toggle-row">
+            <button class="btn-mint" id="soundToggleBtn">Toggle Rain Sound</button>
+            <div class="small-note" id="soundStatusText">Rain ambience is off.</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-num" id="completionCount">0</div>
+              <div class="stat-label">Days you marked the daily task complete</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num" id="journalCount">0</div>
+              <div class="stat-label">Days you saved a reflection</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num" id="moodIcon">☾</div>
+              <div class="stat-label" id="moodText">Move gently through today.</div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <div class="footer">
+        A meaningful day does not have to be a perfect one.
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const quotes = [
+      "You do not have to do everything today. You only need to take the next good step.",
+      "The way you speak to yourself matters. Make it gentler today.",
+      "A better day can begin with one better thought.",
+      "You are allowed to begin again at any point in the day.",
+      "Peace can begin with one intentional pause.",
+      "You do not need perfection to make today meaningful.",
+      "Small habits shape strong lives.",
+      "Sometimes the strongest thing you can do is keep going gently."
+    ];
+
+    const tasks = [
+      "Take five slow breaths before beginning your day.",
+      "Drink a full glass of water and take a short stretch break.",
+      "Write down three things that are going right today.",
+      "Step outside for a few minutes and notice something beautiful.",
+      "Replace one negative thought with a more balanced one.",
+      "Take a brief walk without your phone if possible.",
+      "Give yourself permission to rest for ten quiet minutes.",
+      "Do one helpful thing for your future self before the day ends."
+    ];
+
+    const copingStrategies = [
+      "Try box breathing: inhale for 4, hold for 4, exhale for 4, hold for 4, and repeat a few times.",
+      "Name five things you can see, four you can touch, three you can hear, two you can smell, and one you can taste.",
+      "Pause and relax your shoulders, unclench your jaw, and soften your hands.",
+      "Break your next task into one tiny first step and do only that step.",
+      "Put one hand on your chest and remind yourself that you are safe in this moment.",
+      "Take a short screen break and rest your eyes for one minute.",
+      "Write down what is bothering you, then circle the one part you can control.",
+      "Sip water slowly and give your body a moment to catch up with your mind."
+    ];
+
+    const affirmations = [
+      "I am allowed to move through today at a gentle pace.",
+      "I can handle this one moment at a time.",
+      "Rest is productive when my mind and body need it.",
+      "I do not have to earn kindness from myself.",
+      "I am growing, even when growth feels quiet.",
+      "I am allowed to protect my peace.",
+      "Small steps still count.",
+      "I can begin again without shame.",
+      "I am worthy of care, patience, and hope.",
+      "My value is not measured by how much I do today."
+    ];
+
+    const gratitudePrompts = [
+      "What is one small comfort you are grateful for today?",
+      "What is something your body helped you do today?",
+      "Who is one person you appreciate, even quietly?",
+      "What is one peaceful moment you noticed recently?",
+      "What is one challenge that taught you something useful?",
+      "What is one part of your routine that supports you?",
+      "What is one simple thing in nature you are grateful for?",
+      "What is one strength you have that deserves appreciation?"
+    ];
+
+    const kindnessPrompts = [
+      "Send a brief encouraging message to someone who might need it.",
+      "Offer patience to someone instead of rushing past them.",
+      "Say thank you with intention today.",
+      "Do one small act that makes another person’s day easier.",
+      "Smile and greet someone warmly.",
+      "Give yourself the same kindness you would offer a friend.",
+      "Notice someone’s effort and acknowledge it.",
+      "Leave a space better than you found it."
+    ];
+
+    const moodPrompts = [
+      { icon: "☾", text: "Move gently through today." },
+      { icon: "✦", text: "A little hope is enough for now." },
+      { icon: "🌿", text: "Come back to your breath." },
+      { icon: "☁", text: "Softness is not weakness." },
+      { icon: "🌙", text: "Protect your peace where you can." }
+    ];
+
+    const moodResponses = {
+      anxious: "You do not have to solve everything right now. Slow your breathing, soften your shoulders, and come back to the next small step.",
+      tired: "Today may be a day for gentleness rather than pressure. Rest where you can and lower the bar without guilt.",
+      sad: "It is okay to move softly when your heart feels heavy. Let today be about care, not perfection.",
+      overwhelmed: "You only need to do one thing at a time. Pick the smallest next step and let that be enough for this moment.",
+      hopeful: "Hold onto that small light. Even a little hope can help carry you forward.",
+      calm: "Protect this calm and let it spread gently through the rest of your day."
+    };
+
+    function getDayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    }
+
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    }
+
+    function getDailySelection(arr, salt) {
+      const key = `${getDayKey()}-${salt}`;
+      const index = hashString(key) % arr.length;
+      return arr[index];
+    }
+
+    function randomFrom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function storageKey(name) {
+      return `dreamyWellnessTool-${name}-${getDayKey()}`;
+    }
+
+    function globalKey(name) {
+      return `dreamyWellnessTool-${name}`;
+    }
+
+    function updateDate() {
+      const now = new Date();
+      document.getElementById("todayDate").textContent = now.toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function loadDailyContent() {
+      document.getElementById("dailyQuote").textContent = `"${getDailySelection(quotes, "quote")}"`;
+      document.getElementById("dailyTask").textContent = getDailySelection(tasks, "task");
+      document.getElementById("dailyCoping").textContent = getDailySelection(copingStrategies, "coping");
+      document.getElementById("affirmationText").textContent = getDailySelection(affirmations, "affirmation");
+      document.getElementById("gratitudeText").textContent = getDailySelection(gratitudePrompts, "gratitude");
+      document.getElementById("kindnessText").textContent = getDailySelection(kindnessPrompts, "kindness");
+
+      const mood = getDailySelection(moodPrompts, "mood");
+      document.getElementById("moodIcon").textContent = mood.icon;
+      document.getElementById("moodText").textContent = mood.text;
+      document.getElementById("moodMessage").textContent = "Choose a mood to receive a gentle check-in message.";
+    }
+
+    function updateTaskStatus() {
+      const complete = localStorage.getItem(storageKey("taskComplete")) === "true";
+      const el = document.getElementById("taskStatus");
+      if (complete) {
+        el.textContent = "✓ Completed today";
+        el.classList.add("done");
+      } else {
+        el.textContent = "○ Not completed yet";
+        el.classList.remove("done");
+      }
+    }
+
+    function updateCounts() {
+      document.getElementById("completionCount").textContent =
+        localStorage.getItem(globalKey("completionCount")) || "0";
+      document.getElementById("journalCount").textContent =
+        localStorage.getItem(globalKey("journalCount")) || "0";
+    }
+
+    function completeTask() {
+      const already = localStorage.getItem(storageKey("taskComplete")) === "true";
+      localStorage.setItem(storageKey("taskComplete"), "true");
+      if (!already) {
+        const current = parseInt(localStorage.getItem(globalKey("completionCount")) || "0", 10);
+        localStorage.setItem(globalKey("completionCount"), String(current + 1));
+      }
+      updateTaskStatus();
+      updateCounts();
+    }
+
+    function resetTask() {
+      const already = localStorage.getItem(storageKey("taskComplete")) === "true";
+      localStorage.setItem(storageKey("taskComplete"), "false");
+      if (already) {
+        const current = Math.max(0, parseInt(localStorage.getItem(globalKey("completionCount")) || "0", 10) - 1);
+        localStorage.setItem(globalKey("completionCount"), String(current));
+      }
+      updateTaskStatus();
+      updateCounts();
+    }
+
+    function loadJournal() {
+      document.getElementById("journalEntry").value =
+        localStorage.getItem(storageKey("journal")) || "";
+    }
+
+    function saveJournal() {
+      const text = document.getElementById("journalEntry").value.trim();
+      const hadSaved = localStorage.getItem(storageKey("journalSaved")) === "true";
+      localStorage.setItem(storageKey("journal"), text);
+
+      if (text) {
+        localStorage.setItem(storageKey("journalSaved"), "true");
+        if (!hadSaved) {
+          const current = parseInt(localStorage.getItem(globalKey("journalCount")) || "0", 10);
+          localStorage.setItem(globalKey("journalCount"), String(current + 1));
+        }
+        document.getElementById("journalMessage").textContent = "Your reflection was saved in this browser.";
+      } else {
+        localStorage.setItem(storageKey("journalSaved"), "false");
+        if (hadSaved) {
+          const current = Math.max(0, parseInt(localStorage.getItem(globalKey("journalCount")) || "0", 10) - 1);
+          localStorage.setItem(globalKey("journalCount"), String(current));
+        }
+        document.getElementById("journalMessage").textContent = "The reflection box is empty, so there was nothing to save.";
+      }
+      updateCounts();
+    }
+
+    function clearJournal() {
+      const hadSaved = localStorage.getItem(storageKey("journalSaved")) === "true";
+      document.getElementById("journalEntry").value = "";
+      localStorage.removeItem(storageKey("journal"));
+      localStorage.setItem(storageKey("journalSaved"), "false");
+
+      if (hadSaved) {
+        const current = Math.max(0, parseInt(localStorage.getItem(globalKey("journalCount")) || "0", 10) - 1);
+        localStorage.setItem(globalKey("journalCount"), String(current));
+      }
+
+      updateCounts();
+      document.getElementById("journalMessage").textContent = "Today's reflection was cleared from this browser.";
+    }
+
+    document.getElementById("bonusQuoteBtn").addEventListener("click", () => {
+      document.getElementById("bonusQuoteOutput").innerHTML =
+        `<strong>Extra Encouragement:</strong> "${randomFrom(quotes)}"`;
+    });
+
+    document.getElementById("bonusTaskBtn").addEventListener("click", () => {
+      document.getElementById("bonusTaskOutput").innerHTML =
+        `<strong>Another Positive Task:</strong> ${randomFrom(tasks)}`;
+    });
+
+    document.getElementById("newAffirmationBtn").addEventListener("click", () => {
+      document.getElementById("affirmationText").textContent = randomFrom(affirmations);
+    });
+
+    document.getElementById("newGratitudeBtn").addEventListener("click", () => {
+      document.getElementById("gratitudeText").textContent = randomFrom(gratitudePrompts);
+    });
+
+    document.getElementById("newKindnessBtn").addEventListener("click", () => {
+      document.getElementById("kindnessText").textContent = randomFrom(kindnessPrompts);
+    });
+
+    document.querySelectorAll(".mood-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mood = btn.getAttribute("data-mood");
+        document.getElementById("moodMessage").textContent = moodResponses[mood];
+      });
+    });
+
+    document.getElementById("completeTaskBtn").addEventListener("click", completeTask);
+    document.getElementById("resetTaskBtn").addEventListener("click", resetTask);
+    document.getElementById("saveJournalBtn").addEventListener("click", saveJournal);
+    document.getElementById("clearJournalBtn").addEventListener("click", clearJournal);
+
+    let audioEnabled = false;
+    let audioContext = null;
+    let rainMasterGain = null;
+    let rainSources = [];
+    let rainFilter = null;
+
+    function updateSoundLabels() {
+      document.getElementById("soundLabel").textContent = `Rain sound: ${audioEnabled ? "On" : "Off"}`;
+      document.getElementById("soundStatusText").textContent =
+        audioEnabled ? "Rain ambience is on." : "Rain ambience is off.";
+    }
+
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function createNoiseBuffer(seconds = 3) {
+      const sampleRate = audioContext.sampleRate;
+      const buffer = audioContext.createBuffer(1, sampleRate * seconds, sampleRate);
+      const data = buffer.getChannelData(0);
+
+      for (let i = 0; i < data.length; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      return buffer;
+    }
+
+    function stopRain() {
+      rainSources.forEach(source => {
+        try {
+          source.stop();
+        } catch (e) {}
+      });
+
+      rainSources = [];
+
+      if (rainMasterGain && audioContext) {
+        try {
+          rainMasterGain.gain.cancelScheduledValues(audioContext.currentTime);
+          rainMasterGain.gain.setTargetAtTime(0.0001, audioContext.currentTime, 0.6);
+        } catch (e) {}
+      }
+    }
+
+    function startRain() {
+      initAudio();
+      stopRain();
+
+      rainMasterGain = audioContext.createGain();
+      rainMasterGain.gain.value = 0.0001;
+
+      rainFilter = audioContext.createBiquadFilter();
+      rainFilter.type = "lowpass";
+      rainFilter.frequency.value = 1800;
+      rainFilter.Q.value = 0.6;
+
+      const rainBuffer = createNoiseBuffer(3);
+
+      for (let i = 0; i < 3; i++) {
+        const source = audioContext.createBufferSource();
+        source.buffer = rainBuffer;
+        source.loop = true;
+
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = i === 0 ? 0.08 : i === 1 ? 0.04 : 0.025;
+
+        const filterNode = audioContext.createBiquadFilter();
+        filterNode.type = i === 0 ? "bandpass" : "highpass";
+        filterNode.frequency.value = i === 0 ? 900 : i === 1 ? 2500 : 4200;
+        filterNode.Q.value = 0.7;
+
+        source.connect(filterNode);
+        filterNode.connect(gainNode);
+        gainNode.connect(rainFilter);
+
+        source.start(0, i * 0.7);
+        rainSources.push(source);
+      }
+
+      rainFilter.connect(rainMasterGain);
+      rainMasterGain.connect(audioContext.destination);
+
+      rainMasterGain.gain.cancelScheduledValues(audioContext.currentTime);
+      rainMasterGain.gain.setTargetAtTime(0.08, audioContext.currentTime, 1.2);
+    }
+
+    async function toggleRain() {
+      audioEnabled = !audioEnabled;
+      localStorage.setItem(globalKey("audioEnabled"), audioEnabled ? "true" : "false");
+      updateSoundLabels();
+
+      if (audioEnabled) {
+        try {
+          initAudio();
+          if (audioContext.state === "suspended") {
+            await audioContext.resume();
+          }
+          startRain();
+        } catch (e) {
+          console.log("Rain audio could not start.");
+        }
+      } else {
+        if (audioContext) {
+          stopRain();
+        }
+      }
+    }
+
+    document.getElementById("soundToggleBtn").addEventListener("click", toggleRain);
+
+    function loadAudioPref() {
+      audioEnabled = localStorage.getItem(globalKey("audioEnabled")) === "true";
+      updateSoundLabels();
+
+      if (audioEnabled) {
+        document.getElementById("soundStatusText").textContent =
+          "Rain ambience is saved as on. Click the toggle once to begin playback.";
+      }
+    }
+
+    updateDate();
+    loadDailyContent();
+    loadJournal();
+    updateTaskStatus();
+    updateCounts();
+    loadAudioPref();
+  </script>
+</body>
+</html>
